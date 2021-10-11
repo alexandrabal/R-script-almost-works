@@ -1,0 +1,35 @@
+require(dplyr)
+require(lubridate)
+require(readxl)
+require(ggplot2)
+require(fpp)
+require(forecast)
+
+## Raw Data Import
+setwd("Z:/Marketing Analytics/Attribution/AMP/Q1 FY2018/New Baseline BHT KPIs")
+
+## SWEDEN
+
+## Betsson Sweden
+
+## Import Data
+be_se <- read.csv("be_se.csv", header =T)
+be_se$Date <- dmy(be_se$Date)
+be_se$Date
+# seasonal
+ts_be_se <- ts(be_se$UC_Casino,frequency = 52)
+ts_be_se
+stl_be <- stl(ts_be_se, "periodic")
+stl_be
+seasonal_stl_be <- stl_be$time.series[,1]
+trend_stl_be <- stl_be$time.series[,2]
+random_stl_be <- stl_be$time.series[,3]
+
+plot(ts_be_se)
+plot(as.ts(seasonal_stl_be))
+plot(trend_stl_be)
+plot(random_stl_be)
+plot(stl_be)
+
+be_output <- bind_rows(list("date" = be_se$Date, "be_seasonal" = seasonal_stl_be, "be_trend" = trend_stl_be, "be_random" = random_stl_be))
+write.csv(x = be_output, file = "be_output_week.csv")
