@@ -15,7 +15,7 @@ setwd("Z:/Marketing Analytics/Attribution/AMP/Q1 FY2018/Deposit Analysis R")
 # Import Data
 be_fi <- read.csv("be_fi.csv", header = T)
 be_fi$Date <- dmy(be_fi$Date)
-be_fi$Date
+
 # seasonal
 ts_be_fi <- ts(be_fi$Dep_Count, frequency = 52)
 stl_be <- stl(ts_be_fi, "periodic")
