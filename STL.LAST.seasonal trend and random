@@ -1,0 +1,36 @@
+require(dplyr)
+require(lubridate)
+require(readxl)
+require(ggplot2)
+require(forecast)
+require(fpp)
+
+## Set WD
+setwd("Z:/Marketing Analytics/Attribution/AMP/Q1 FY2018/Deposit Analysis R")
+
+## Finland
+
+## Betsson Finland
+
+# Import Data
+be_fi <- read.csv("be_fi.csv", header = T)
+be_fi$Date <- dmy(be_fi$Date)
+
+# seasonal
+ts_be_fi <- ts(be_fi$Dep_Count, frequency = 52)
+stl_be <- stl(ts_be_fi, "periodic")
+seasonal_stl_be <- stl_be$time.series[,1]
+trend_stl_be <- stl_be$time.series[,2]
+random_stl_be <- stl_be$time.series[,3]
+
+## Plot & output test
+
+plot(ts_be_fi)
+plot(as.ts(seasonal_stl_be))
+plot(trend_stl_be)
+plot(random_stl_be)
+plot(stl_be)
+
+be_fi_output <- bind_rows(list("Date" = be_fi$Date, "be_seasonal" = seasonal_stl_be, "be_trend" = trend_stl_be, "be_random" = random_stl_be))
+
+write.csv(x = be_fi_output, file = "be_fi_output_week.csv")
