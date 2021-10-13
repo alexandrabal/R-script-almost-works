@@ -1,0 +1,25 @@
+require(dplyr)
+require(lubridate)
+require(readxl)
+require(ggplot2)
+require(fpp)
+
+setwd("Z:/Marketing Analytics/Attribution/AMP/Q1 FY2018/New Baseline BHT KPIs")
+
+
+#SWEDEN
+#BETSSON
+#UC CASINO and SB
+be_se <- read.csv("be_se.csv", header =T)
+be_se$Date <- dmy(be_se$Date)
+
+ts_be_se <- ts(be_se$UC, frequency = 52)
+stl_be <- stl(ts_be_se, "periodic")
+seasonal_stl_be <- stl_be$time.series[,1]
+trend_stl_be <- stl_be$time.series[,2]
+random_stl_be <- stl_be$time.series[,3]
+
+#OUTPUT
+be_output <- bind_rows(list("Date" = be_se$Date, "seasonal" = seasonal_stl_be, "trend" = trend_stl_be, "random" = random_stl_be))
+                       
+write.csv(x = be_output, file = "be_se_output_week.csv")
